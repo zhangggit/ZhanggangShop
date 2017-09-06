@@ -1,5 +1,6 @@
 package com.example.zhanggang.zhanggangshop;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +27,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     List<String> list;
     HashMap<Integer, Boolean> hashMap;
+    Context context;
+    TextView shouTv;
+    int count=0;
 
-    public MyAdapter() {
-        list = new ArrayList<>();
-        hashMap = new HashMap<>();
-        for (int i = 0; i < 50; i++) {
-            list.add("商品"+i);
-            hashMap.put(i, false); //默认全不选中
-        }
+    public MyAdapter(List<String> list, HashMap<Integer, Boolean> hashMap, Context context, TextView shouTv) {
+        this.list = list;
+        this.hashMap = hashMap;
+        this.context = context;
+        this.shouTv = shouTv;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.shangping.setText(list.get(position));
+        holder.imageView.setImageResource(R.drawable.timg);
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,7 +57,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         });
         //将状态赋给checkbox
         holder.checkBox.setChecked(hashMap.get(position));
+
     }
+
     //全选方法
     public void selectAll() {
         Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();  //的到集合
@@ -72,17 +76,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             notifyDataSetChanged();
         }
     }
+
     //反选方法
-    public void selectFan(){
+    public void selectFan() {
         Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();
         for (Map.Entry<Integer, Boolean> bean : entries) {
             bean.setValue(!bean.getValue());
             notifyDataSetChanged();
         }
     }
-    public int count(){
-        return 0;
-    }
+
     @Override
     public int getItemCount() {
         return list.size();
@@ -93,12 +96,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         ImageView imageView;
         @BindView(R.id.shangping)
         TextView shangping;
-        @BindView(R.id.check)
+
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            checkBox=itemView.findViewById(R.id.check_box);
         }
     }
 }

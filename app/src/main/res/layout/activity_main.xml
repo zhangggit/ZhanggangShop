@@ -43,12 +43,21 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/biaoti"
-        android:layout_weight="1"/>
+    <com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout
+        android:id="@+id/srl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/biaoti"
+            android:layout_weight="1"/>
+
+    </com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout>
+
+
 
     <!--<RelativeLayout-->
         <!--android:id="@+id/relativelayout"-->
@@ -57,7 +66,7 @@
         <!--android:layout_weight="6"-->
         <!--&gt;-->
         <!--<TextView-->
-            <!--android:id="@+id/shuliang"-->
+            <!--android:id="@+id/showTv"-->
             <!--android:text="个数："-->
             <!--android:gravity="center"-->
             <!--android:textSize="18sp"-->

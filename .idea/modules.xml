@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ZhanggangShop.iml" filepath="$PROJECT_DIR$/ZhanggangShop.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swiperefreshlayoutlibrary/swiperefreshlayoutlibrary.iml" filepath="$PROJECT_DIR$/swiperefreshlayoutlibrary/swiperefreshlayoutlibrary.iml" />
     </modules>
   </component>
 </project>
