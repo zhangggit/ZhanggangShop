@@ -3,82 +3,86 @@ package com.example.zhanggang.zhanggangshop;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayout;
-import com.bawei.swiperefreshlayoutlibrary.SwipyRefreshLayoutDirection;
-
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+import static android.R.attr.entries;
+
+public class MainActivity extends AppCompatActivity implements XRecyclerView.LoadingListener {
 
     @BindView(R.id.quanxuan) TextView quanxuan;
     @BindView(R.id.fanxuan) TextView fanxuan;
     @BindView(R.id.recyclerview)
-    RecyclerView recyclerView;
-    @BindView(R.id.srl)
-    SwipyRefreshLayout swipyRefreshLayout;
+    XRecyclerView recyclerView;
 
     List<String> list = new ArrayList<>();
     HashMap<Integer, Boolean> hashMap = new HashMap<>();
     private MyAdapter adapter;
-    private TextView showTv;
+    @BindView(R.id.showTv)
+    TextView showTv;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-//        showTv = (TextView) findViewById(R.id.showTv);
-
-        //设置是否支持刷新和加载更多
-        swipyRefreshLayout.setDirection(SwipyRefreshLayoutDirection.BOTH);
-
-        swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh(int index) {
-                list.clear();
-                init();
-                adapter.notifyDataSetChanged();
-                swipyRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onLoad(int index) {
-                init();
-                adapter.notifyDataSetChanged();
-                swipyRefreshLayout.setRefreshing(false);
-            }
-        });
 
         init();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-
         recyclerView.addItemDecoration(new Decoration());
 
         adapter = new MyAdapter(list,hashMap,MainActivity.this,showTv);
         recyclerView.setAdapter(adapter);
 
+        recyclerView.setLoadingListener(this);
+        //全选
         quanxuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapter.selectAll();
+                Set<Map.Entry<Integer, Boolean>> entries = adapter.selectAll();
+                int count=0;
+                for (Map.Entry<Integer, Boolean> bean:entries) {
+                    if (bean.getValue()==true){
+                        count++;
+                    }
+                }
+//                Toast.makeText(MainActivity.this, "111111111111"+count, Toast.LENGTH_SHORT).show();
+                showTv.setText("个数："+count+"");
             }
         });
+        //反选
         fanxuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 adapter.selectFan();
+            }
+        });
+        //调用adapter的计数接口
+        adapter.setCounter1(new MyAdapter.countener() {
+            @Override
+            public void setCount(HashMap<Integer, Boolean> hashMap) {
+                int i = 0;
+                Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();
+                for (Map.Entry<Integer, Boolean> bean: entries) {
+                    if (bean.getValue()==true){
+                        i++;
+                    }
+                }
+                showTv.setText("个数："+i+"");
             }
         });
 
@@ -92,5 +96,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRefresh() {
+        list.clear();
+        init();
+        adapter.notifyDataSetChanged();
+        recyclerView.refreshComplete();
+    }
 
+    @Override
+    public void onLoadMore() {
+        init();
+        adapter.notifyDataSetChanged();
+        recyclerView.loadMoreComplete();
+    }
 }

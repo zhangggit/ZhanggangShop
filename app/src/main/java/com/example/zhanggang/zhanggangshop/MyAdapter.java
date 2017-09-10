@@ -29,7 +29,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     HashMap<Integer, Boolean> hashMap;
     Context context;
     TextView shouTv;
-    int count=0;
+
+    countener counter1;
+    public void setCounter1(countener counter1) {
+        this.counter1 = counter1;
+    }
 
     public MyAdapter(List<String> list, HashMap<Integer, Boolean> hashMap, Context context, TextView shouTv) {
         this.list = list;
@@ -53,16 +57,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onClick(View view) {
                 hashMap.put(position, !hashMap.get(position)); //点击一次 就把它设成自己的反值
                 notifyDataSetChanged();
+
+                if (counter1!=null){
+                    counter1.setCount(hashMap); //回传hashmap集合
+                }
+
             }
         });
         //将状态赋给checkbox
         holder.checkBox.setChecked(hashMap.get(position));
-
     }
 
     //全选方法
-    public void selectAll() {
-        Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();  //的到集合
+    public Set<Map.Entry<Integer, Boolean>> selectAll() {
+        Set<Map.Entry<Integer, Boolean>> entries = hashMap.entrySet();  //得到集合
         boolean isSelected = false;   //保存当前的状态
         for (Map.Entry<Integer, Boolean> bean : entries) {
             Boolean value = bean.getValue();
@@ -75,6 +83,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             bean.setValue(isSelected);
             notifyDataSetChanged();
         }
+        return entries;  //返回hashset集合 用于点击全选时 计算选中多选框的数量
     }
 
     //反选方法
@@ -85,7 +94,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             notifyDataSetChanged();
         }
     }
-
+    //接口 用于点击多选框时 计算多选框选中的数量
+    public interface countener{
+        void setCount(HashMap<Integer, Boolean> hashMap);
+    }
     @Override
     public int getItemCount() {
         return list.size();
@@ -96,7 +108,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         ImageView imageView;
         @BindView(R.id.shangping)
         TextView shangping;
-
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
